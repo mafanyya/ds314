@@ -41,7 +41,7 @@ const handleError = (done) => {
 function hbs(done) {
     pump([
         src(['*.hbs', 'partials/**/*.hbs']),
-        livereload()
+        // livereload()
     ], handleError(done));
 }
 
@@ -55,7 +55,7 @@ function css(done) {
             cssnano()
         ]),
         dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
+        // livereload()
     ], handleError(done));
 }
 
@@ -69,7 +69,7 @@ function js(done) {
         concat('casper.js'),
         uglify(),
         dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
+        // livereload()
     ], handleError(done));
 }
 
