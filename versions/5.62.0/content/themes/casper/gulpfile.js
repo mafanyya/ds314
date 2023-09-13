@@ -2,7 +2,8 @@ const {series, watch, src, dest, parallel} = require('gulp');
 const pump = require('pump');
 const path = require('path');
 const releaseUtils = require('@tryghost/release-utils');
-const inquirer = require('inquirer');
+import inquirer from 'inquirer';
+// const inquirer = require('inquirer');
 
 // gulp plugins and utils
 const livereload = require('gulp-livereload');
