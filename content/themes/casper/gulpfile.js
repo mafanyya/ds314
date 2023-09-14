@@ -96,6 +96,7 @@ const jsWatcher = () => watch('assets/js/**', js);
 const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], hbs);
 const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
 
+exports.build = build;
 
 exports.zip = series(build, zipper);
 exports.default = series(build, serve, watcher);
