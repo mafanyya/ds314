@@ -88,8 +88,8 @@ function lightbox(trigger) {
             }
         }
 
-        var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
-        gallery.init();
+        var galler = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+        galler.init();
 
         return false;
     };

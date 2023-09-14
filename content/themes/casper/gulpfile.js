@@ -41,7 +41,7 @@ const handleError = (done) => {
 function hbs(done) {
     pump([
         src(['*.hbs', 'partials/**/*.hbs']),
-        livereload()
+        // livereload()
     ], handleError(done));
 }
 
@@ -55,7 +55,7 @@ function css(done) {
             cssnano()
         ]),
         dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
+        // livereload()
     ], handleError(done));
 }
 
@@ -69,7 +69,7 @@ function js(done) {
         concat('casper.js'),
         uglify(),
         dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
+        // livereload()
     ], handleError(done));
 }
 
@@ -90,15 +90,15 @@ function zipper(done) {
     ], handleError(done));
 }
 
-const cssWatcher = () => watch('assets/css/**', css);
-const jsWatcher = () => watch('assets/js/**', js);
-const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], hbs);
-const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
-const build = series(css, js);
-
-exports.build = build;
-exports.zip = series(build, zipper);
-exports.default = series(build, serve, watcher);
+// const cssWatcher = () => watch('assets/css/**', css);
+// const jsWatcher = () => watch('assets/js/**', js);
+// const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], hbs);
+// const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
+// const build = series(css, js);
+//
+// exports.build = build;
+// exports.zip = series(build, zipper);
+// exports.default = series(build, serve, watcher);
 
 exports.release = async () => {
     // @NOTE: https://yarnpkg.com/lang/en/docs/cli/version/

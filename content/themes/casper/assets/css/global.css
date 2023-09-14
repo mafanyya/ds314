@@ -279,7 +279,7 @@ body {
     font-style: normal;
     letter-spacing: 0;
     text-rendering: optimizeLegibility;
-    background: #fff;
+    background: #e5e5e5;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -299,7 +299,7 @@ hr {
     padding: 0;
     height: 1px;
     border: 0;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid #b8b8b8;
 }
 
 audio,
