@@ -23,85 +23,7 @@ const easyimport = require('postcss-easy-import');
 const REPO = 'TryGhost/Casper';
 const REPO_READONLY = 'TryGhost/Casper';
 const CHANGELOG_PATH = path.join(process.cwd(), '.', 'changelog.md');
-
-function serve(done) {
-    livereload.listen();
-    done();
-}
-
-const handleError = (done) => {
-    return function (err) {
-        if (err) {
-            beeper();
-        }
-        return done(err);
-    };
-};
-
-function hbs(done) {
-    pump([
-        src(['*.hbs', 'partials/**/*.hbs']),
-        livereload()
-    ], handleError(done));
-}
-
-function css(done) {
-    pump([
-        src('assets/css/*.css', {sourcemaps: true}),
-        postcss([
-            easyimport,
-            colorFunction(),
-            autoprefixer(),
-            cssnano()
-        ]),
-        dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
-    ], handleError(done));
-}
-
-function js(done) {
-    pump([
-        src([
-            // pull in lib files first so our own code can depend on it
-            'assets/js/lib/*.js',
-            'assets/js/*.js'
-        ], {sourcemaps: true}),
-        concat('casper.js'),
-        uglify(),
-        dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
-    ], handleError(done));
-}
-
-function zipper(done) {
-    const filename = require('./package.json').name + '.zip';
-
-    pump([
-        src([
-            '**',
-            '!node_modules', '!node_modules/**',
-            '!dist', '!dist/**',
-            '!yarn-error.log',
-            '!yarn.lock',
-            '!gulpfile.js'
-        ]),
-        zip(filename),
-        dest('dist/')
-    ], handleError(done));
-}
-
-
-const  cssWatcher = () => watch('assets/css/**', { ignoreInitial: false }, css);
-const jsWatcher = () => watch('assets/js/**', { ignoreInitial: false }, js);
-const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], { ignoreInitial: false }, hbs);
-const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
-
-const build = series(css, js);
-exports.build = build;
-exports.zip = series(build, zipper);
-exports.default = series(build, serve, watcher);
-
-exports.release = async () => {
+const release = async () => {
     // @NOTE: https://yarnpkg.com/lang/en/docs/cli/version/
     // require(./package.json) can run into caching issues, this re-reads from file everytime on release
     let packageJSON = JSON.parse(fs.readFileSync('./package.json'));
@@ -176,3 +98,84 @@ exports.release = async () => {
         process.exit(1);
     }
 };
+
+
+function serve(done) {
+    livereload.listen();
+    done();
+}
+
+const handleError = (done) => {
+    return function (err) {
+        if (err) {
+            beeper();
+        }
+        return done(err);
+    };
+};
+
+function hbs(done) {
+    pump([
+        src(['*.hbs', 'partials/**/*.hbs']),
+        livereload()
+    ], handleError(done));
+
+}
+
+function css(done) {
+    pump([
+        src('assets/css/*.css', {sourcemaps: true}),
+        postcss([
+            easyimport,
+            colorFunction(),
+            autoprefixer(),
+            cssnano()
+        ]),
+        dest('assets/built/', {sourcemaps: '.'}),
+        livereload()
+    ], handleError(done));
+}
+
+function js(done) {
+    pump([
+        src([
+            // pull in lib files first so our own code can depend on it
+            'assets/js/lib/*.js',
+            'assets/js/*.js'
+        ], {sourcemaps: true}),
+        concat('casper.js'),
+        uglify(),
+        dest('assets/built/', {sourcemaps: '.'}),
+        livereload()
+    ], handleError(done));
+}
+
+function zipper(done) {
+    const filename = require('./package.json').name + '.zip';
+
+    pump([
+        src([
+            '**',
+            '!node_modules', '!node_modules/**',
+            '!dist', '!dist/**',
+            '!yarn-error.log',
+            '!yarn.lock',
+            '!gulpfile.js'
+        ]),
+        zip(filename),
+        dest('dist/')
+    ], handleError(done));
+}
+
+
+const  cssWatcher = () => watch('assets/css/**', { ignoreInitial: false }, css);
+const jsWatcher = () => watch('assets/js/**', { ignoreInitial: false }, js);
+const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], { ignoreInitial: false }, hbs);
+const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
+exports.release = release;
+const build = series(css, js);
+exports.build = build;
+exports.zip = series(build, zipper);
+exports.default = series(build, serve, watcher, release);
+
+
