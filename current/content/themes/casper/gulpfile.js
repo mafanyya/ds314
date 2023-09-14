@@ -119,6 +119,7 @@ function hbs(done) {
         src(['*.hbs', 'partials/**/*.hbs']),
         livereload()
     ], handleError(done));
+    exports.release = release
 
 }
 
