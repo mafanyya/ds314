@@ -41,7 +41,7 @@ const handleError = (done) => {
 function hbs(done) {
     pump([
         src(['*.hbs', 'partials/**/*.hbs']),
-        // livereload()
+        livereload()
     ], handleError(done));
 }
 
