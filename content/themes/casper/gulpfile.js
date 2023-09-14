@@ -90,16 +90,14 @@ function zipper(done) {
     ], handleError(done));
 }
 
-const build = series(css, js);
-exports.build = build;
+
 const  cssWatcher = () => watch('assets/css/**', { ignoreInitial: false }, css);
 const jsWatcher = () => watch('assets/js/**', { ignoreInitial: false }, js);
 const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], { ignoreInitial: false }, hbs);
 const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
 
+const build = series(css, js);
 exports.build = build;
-
-
 exports.zip = series(build, zipper);
 exports.default = series(build, serve, watcher);
 
