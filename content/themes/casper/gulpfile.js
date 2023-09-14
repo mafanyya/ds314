@@ -55,7 +55,7 @@ function css(done) {
             cssnano()
         ]),
         dest('assets/built/', {sourcemaps: '.'}),
-        // livereload()
+        livereload()
     ], handleError(done));
 }
 
@@ -69,7 +69,7 @@ function js(done) {
         concat('casper.js'),
         uglify(),
         dest('assets/built/', {sourcemaps: '.'}),
-        // livereload()
+        livereload()
     ], handleError(done));
 }
 
@@ -95,13 +95,13 @@ exports.build = build;
 const  cssWatcher = () => watch('assets/css/**', css);
 const jsWatcher = () => watch('assets/js/**', js);
 const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], hbs);
-const watcher = async () => parallel(cssWatcher, jsWatcher, hbsWatcher);
+const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
 
 exports.build = build;
 
 
 exports.zip = series(build, zipper);
-exports.default = series(watcher,build, serve);
+exports.default = series(build, serve,watcher);
 
 exports.release = async () => {
     // @NOTE: https://yarnpkg.com/lang/en/docs/cli/version/
