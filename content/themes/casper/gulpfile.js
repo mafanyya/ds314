@@ -89,12 +89,13 @@ function zipper(done) {
         dest('dist/')
     ], handleError(done));
 }
+const build = series(css, js);
 exports.build = build;
 const cssWatcher = () => watch('assets/css/**', css);
 const jsWatcher = () => watch('assets/js/**', js);
 const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], hbs);
 const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
-const build = series(css, js);
+
 
 exports.zip = series(build, zipper);
 exports.default = series(build, serve, watcher);
