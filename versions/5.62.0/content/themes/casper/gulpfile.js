@@ -101,7 +101,7 @@ exports.build = build;
 
 
 exports.zip = series(build, zipper);
-exports.default = series(build, serve,watcher);
+exports.default = series(build, watcher, serve);
 
 exports.release = async () => {
     // @NOTE: https://yarnpkg.com/lang/en/docs/cli/version/
