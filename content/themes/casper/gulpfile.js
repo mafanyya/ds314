@@ -4,6 +4,7 @@ const path = require('path');
 const releaseUtils = require('@tryghost/release-utils');
 
 const inquirer = require('inquirer');
+let packageJSONFile = require('./package.json');
 
 // gulp plugins and utils
 const livereload = require('gulp-livereload');
@@ -26,7 +27,7 @@ const CHANGELOG_PATH = path.join(process.cwd(), '.', 'changelog.md');
 const release = async () => {
     // @NOTE: https://yarnpkg.com/lang/en/docs/cli/version/
     // require(./package.json) can run into caching issues, this re-reads from file everytime on release
-    let packageJSON = JSON.parse(fs.readFileSync('./package.json'));
+    let packageJSON = JSON.parse(packageJSONFile);
     const newVersion = packageJSON.version;
 
     if (!newVersion || newVersion === '') {
