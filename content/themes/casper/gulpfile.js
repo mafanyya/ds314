@@ -179,7 +179,7 @@ const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
 exports.release = release;
 const build = series(css, js);
 //exports.build = build;
-exports.zip = series(build, zipper);
+exports.zip = zipper;
 exports.default = series(build, serve, watcher, release);
 
 
