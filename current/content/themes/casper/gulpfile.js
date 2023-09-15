@@ -99,7 +99,6 @@ const release = async () => {
     }
 };
 
-
 function serve(done) {
     livereload.listen();
     done();
@@ -172,84 +171,11 @@ const  cssWatcher = () => watch('assets/css/**', { ignoreInitial: false }, css);
 const jsWatcher = () => watch('assets/js/**', { ignoreInitial: false }, js);
 const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs'], { ignoreInitial: false }, hbs);
 const watcher = parallel(cssWatcher, jsWatcher, hbsWatcher);
-
+exports.release =  release;
 const build = series(css, js);
 exports.build = build;
 exports.zip = series(build, zipper);
-exports.default = series(build, serve);
+exports.default = series(build, serve, release);
 
-exports.release = async () => {
-    // @NOTE: https://yarnpkg.com/lang/en/docs/cli/version/
-    // require(./package.json) can run into caching issues, this re-reads from file everytime on release
-    let packageJSON = JSON.parse(fs.readFileSync('./package.json'));
-    const newVersion = packageJSON.version;
 
-    if (!newVersion || newVersion === '') {
-        console.log(`Invalid version: ${newVersion}`);
-        return;
-    }
 
-    console.log(`\nCreating release for ${newVersion}...`);
-
-    const githubToken = process.env.GST_TOKEN;
-
-    if (!githubToken) {
-        console.log('Please configure your environment with a GitHub token located in GST_TOKEN');
-        return;
-    }
-
-    try {
-        const result = await inquirer.prompt([{
-            type: 'input',
-            name: 'compatibleWithGhost',
-            message: 'Which version of Ghost is it compatible with?',
-            default: '5.0.0'
-        }]);
-
-        const compatibleWithGhost = result.compatibleWithGhost;
-
-        const releasesResponse = await releaseUtils.releases.get({
-            userAgent: 'Casper',
-            uri: `https://api.github.com/repos/${REPO_READONLY}/releases`
-        });
-
-        if (!releasesResponse || !releasesResponse) {
-            console.log('No releases found. Skipping...');
-            return;
-        }
-
-        let previousVersion = releasesResponse[0].tag_name || releasesResponse[0].name;
-        console.log(`Previous version: ${previousVersion}`);
-
-        const changelog = new releaseUtils.Changelog({
-            changelogPath: CHANGELOG_PATH,
-            folder: path.join(process.cwd(), '.')
-        });
-
-        changelog
-            .write({
-                githubRepoPath: `https://github.com/${REPO}`,
-                lastVersion: previousVersion
-            })
-            .sort()
-            .clean();
-
-        const newReleaseResponse = await releaseUtils.releases.create({
-            draft: true,
-            preRelease: false,
-            tagName: 'v' + newVersion,
-            releaseName: newVersion,
-            userAgent: 'Casper',
-            uri: `https://api.github.com/repos/${REPO}/releases`,
-            github: {
-                token: githubToken
-            },
-            content: [`**Compatible with Ghost ≥ ${compatibleWithGhost}**\n\n`],
-            changelogPath: CHANGELOG_PATH
-        });
-        console.log(`\nRelease draft generated: ${newReleaseResponse.releaseUrl}\n`);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
-};
