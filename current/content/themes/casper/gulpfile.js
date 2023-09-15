@@ -180,6 +180,6 @@ exports.release = release;
 const build = series(css, js);
 //exports.build = build;
 exports.zip = zipper;
-exports.default = series(build, serve, watcher, release);
+exports.default = series(serve, watcher, release);
 
 
