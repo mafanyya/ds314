@@ -175,7 +175,7 @@ exports.release =  release;
 const build = series(css, js);
 exports.build = build;
 exports.zip = series(build, zipper);
-exports.default = series(build, serve, release);
+exports.default = series(build, serve, watcher, release);
 
 
 
