@@ -121,8 +121,9 @@ function hbs(done) {
         src(['*.hbs', 'partials/**/*.hbs']),
         livereload()
     ], handleError(done));
-    exports.release = release
     console.log('FINISH HBS')
+    exports.release = release
+
 
 }
 
