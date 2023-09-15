@@ -27,6 +27,7 @@ const CHANGELOG_PATH = path.join(process.cwd(), '.', 'changelog.md');
 const release = async () => {
     // @NOTE: https://yarnpkg.com/lang/en/docs/cli/version/
     // require(./package.json) can run into caching issues, this re-reads from file everytime on release
+    console.log('start release')
     let packageJSON = JSON.parse(packageJSONFile);
     const newVersion = packageJSON.version;
 
@@ -121,6 +122,7 @@ function hbs(done) {
         livereload()
     ], handleError(done));
     exports.release = release
+    console.log('FINISH HBS')
 
 }
 
